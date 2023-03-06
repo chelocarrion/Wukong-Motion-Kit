@@ -1,0 +1,28 @@
+pins.set_pull(DigitalPin.P1, PinPullMode.PULL_UP)
+pins.set_pull(DigitalPin.P2, PinPullMode.PULL_UP)
+while not (input.button_is_pressed(Button.A)):
+    pass
+# - Si sensor DER i Sensor IZQ detectan negro  ( 0,0) ===> Avanza
+# - Si sensor DER detecta negro y Sensor IZQ  blanco  ( 0,1) ===> Giro derecha   
+# - Si sensor DER detecta Blanco y Sensor IZQ  negro  ( 1,0) ===> Giro izquierda  
+# - Si sensor DER y Sensor IZQ detectan blanco  (1,1) ===>  Imposible, línea más ancha
+# P1 SENSOR DER
+# P2 SENSOR IZQ
+# M1 motor DER
+# M2 motor IZQ
+# 
+
+def on_forever():
+    if pins.digital_read_pin(DigitalPin.P1) == 0 and pins.digital_read_pin(DigitalPin.P2) == 0:
+        wuKong.set_all_motor(-100, -100)
+        basic.show_arrow(ArrowNames.NORTH)
+    elif pins.digital_read_pin(DigitalPin.P1) == 0 and pins.digital_read_pin(DigitalPin.P2) == 1:
+        wuKong.set_all_motor(-100, 0)
+        basic.show_arrow(ArrowNames.WEST)
+    elif pins.digital_read_pin(DigitalPin.P1) == 1 and pins.digital_read_pin(DigitalPin.P2) == 0:
+        wuKong.set_all_motor(0, -100)
+        basic.show_arrow(ArrowNames.EAST)
+    else:
+        wuKong.stop_all_motor()
+        basic.show_icon(IconNames.NO)
+basic.forever(on_forever)
